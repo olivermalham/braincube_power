@@ -12,6 +12,7 @@ use embedded_time::fixed_point::FixedPoint;
 use panic_probe as _;
 
 mod application;
+mod GC9A01_Display;
 use crate::application::application_main;
 
 // use pico::hal::{

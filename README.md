@@ -1,55 +1,22 @@
-# Project template for rp2040-hal
+# BrainCube Power Handler
+BrainCube will be running up to 16 Raspberry Pi nodes. Need the ability to safely turn on and more importantly off. 
+The nodes will be configured to power up or down when a GPIO pins is pulled low. I'll need to make sure that I can 
+drive all the R.Pi gpios from the same Pico GPIO. 
 
-This template is intended as a starting point for developing your own firmware based on the rp2040-hal.
+I also want to be able to monitor the load that each node is under, and provide a pretty sci-fi inspired
+UI on the round TFT display that I have. Use the power button that is already on the case for toggling the power
+on and off.
 
-It includes all of the `knurling-rs` tooling as showcased in https://github.com/knurling-rs/app-template (`defmt`, `defmt-rtt`, `panic-probe`, `flip-link`) to make development as easy as possible.
-
-`probe-run` is configured as the default runner, so you can start your program as easy as
-```
-DEFMT_LOG=trace cargo run --release
-```
+I've already written a little Rust application that reads the Linux process load data file and out puts a PWM 
+signal on a GPIO pin. 
 
 ## Requirements
-- The standard Rust tooling (cargo, rustup) which you can install from https://rustup.rs/
-
-- Toolchain support for the cortex-m0+ processors in the rp2040 (thumbv6m-none-eabi)
-
-- flip-link - this allows you to detect stack-overflows on the first core, which is the only supported target for now.
-
-- probe-run. Upstream support for RP2040 was added with version 0.3.1.
-
-- A CMSIS-DAP probe. (JLink probes sort of work but are very unstable. Other probes won't work at all)
-
-  You can use a second Pico as a CMSIS-DAP debug probe by installing the following firmware on it:
-  https://github.com/majbthrd/DapperMime/releases/download/20210225/raspberry_pi_pico-DapperMime.uf2
-
-  More details on supported debug probes can be found in [debug_probes.md](debug_probes.md)
-
-## Installation of development dependencies
-```
-rustup target install thumbv6m-none-eabi
-cargo install probe-run
-cargo install flip-link
-```
-
-## Running
-
-For a debug build
-```
-DEFMT_LOG=trace cargo run
-```
-For a release build
-```
-DEFMT_LOG=trace cargo run --release
-```
-  
-## License
-
-This project is licensed under either of
-
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-  http://www.apache.org/licenses/LICENSE-2.0)
-
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-at your option.
+(Listed in implementation order)
+- Read a momentary push button
+- Toggle the state of an output pin
+- Measure the pulse length of PWM pulses on 16 input pins
+- Configure SPI and misc pins for the round TFT
+- Initialise the round TFT
+- Draw a test pattern on the TFT
+- Design the UI
+- Implement the UI as an RLE image. Colours are used as indexes into a palette, display colour is mapped at run time to the load value / image 
